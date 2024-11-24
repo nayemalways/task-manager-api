@@ -26,13 +26,17 @@ app.use(limitter);
 app.set('etag', WEB_CACHE);
 
 // MONGODB CONNECTION
-mongoose.connect(MONGODB_CONNECTION, {autoIndex: true})
-.then( () => {
-    console.log(`MongoDB database connected`);
-}).catch( (error) => {
-    console.log(error);
-})
+const options = {
+    user: "nayemalways",       
+    pass: "nayem#dev017",   
+    autoIndex: true,           
+    serverSelectionTimeoutMS: 30000   
+};
+mongoose.connect(MONGODB_CONNECTION , options)
+    .then(() => console.log('DB connect success'))
+    .catch((err) => console.error(err));
 
+ 
 
 // STATIC STORAGE FILE
 app.use(express.static('storage'));
