@@ -49,12 +49,35 @@ export const ProfileDetails = async (req, res) => {
 
 // USER PROFILE UPDATE
 export const Profile_Update = async (req, res) => {
-    res.json({status: "Success", message: "user profile-update successull"});
+    try {
+        const _id = {_id: req.headers["user_id"]};
+        const reqBody = req.body;
+        const update = await UserModel.updateOne(_id, reqBody);
+
+        if(!update || update.length === 0){
+            res.json({status: "failed", message: "Couldn't update. Something went wrong!"});
+        }else{
+            res.json({status: "Success", data: update});
+        }
+    }catch(e){
+        res.status(400).json({status: "Error", error: e.toString()});
+    }
 }
 
 // USER PROFILE DELETE
-export const Profile_Delete = async (req, res) => {
-    res.json({status: "Success", message: "user profile-delete successull"});
+export const ProfileDelete = async (req, res) => {
+    try {
+        const id = req.headers["user_id"];
+        const delete_user = await UserModel.findByIdAndDelete(id);
+
+        if(!delete_user || delete_user.length === 0) {
+            res.json({status: "failed", message: "Couldn't delete"});
+        }else{
+            res.json({status: "Success", data: delete_user});
+        }
+    }catch(e){
+        res.status(400).json({status: "Error", error: e.toString()});
+    }
 }
 
 
