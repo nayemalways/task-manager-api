@@ -13,11 +13,13 @@ router.post('/login', userController.Login);
 router.get('/profile-details', AuthVerify, userController.ProfileDetails);
 router.put('/profile-update', AuthVerify, userController.Profile_Update);
 router.delete('/profile-delete', AuthVerify, userController.ProfileDelete);
+
 router.get('/email-verify', userController.Email_Verify);
 router.post('/code-verify', userController.Code_Verify);
 router.post('/passwordReset', userController.Password_Reset);
 
-// Task
+
+// Task Related API Endpoint
 router.post('/taskCreate', AuthVerify, TaskController.createTask);
 router.put('/updateTask', AuthVerify, TaskController.updateTask);
 router.delete('/deleteTask', AuthVerify, TaskController.deleteTask);

@@ -1,13 +1,21 @@
 import UserModel from "../model/UserModel.js";
 import * as tokenUtility from '../utility/tokenUtility.js'; 
+import { UserData } from "../utility/UserDataValidation.js";
 
 // USER REGISTRATIN
 export const Registration = async (req, res) => {
 
     try{
         let reqBody = req.body;
-        await UserModel.create(reqBody);
-        res.json({status: "Success", message: "user registration successfull"});
+        const DataValidation = UserData(reqBody); // Validate user data if the right data has inputed
+
+        if(DataValidation){
+            let data = await UserModel.create(reqBody);
+            res.json({status: "Success", data: data});
+        }else{
+            res.json({status: "failed", message: "Not a valid data provided!"});
+        }
+       
     }catch(error){
         return res.json({status: "fail", Message: error.toString()});
     }
@@ -28,7 +36,7 @@ export const Login = async (req, res) => {
         }
     }catch(error){
         console.log(error);
-        return res.json({status: "fail", Message: error.toString()});
+        return res.json({status: "Error", Message: error.toString()});
     }
         
  
@@ -60,7 +68,7 @@ export const Profile_Update = async (req, res) => {
             res.json({status: "Success", data: update});
         }
     }catch(e){
-        res.status(400).json({status: "Error", error: e.toString()});
+        res.json({status: "Error", error: e.toString()});
     }
 }
 
@@ -70,13 +78,13 @@ export const ProfileDelete = async (req, res) => {
         const id = req.headers["user_id"];
         const delete_user = await UserModel.findByIdAndDelete(id);
 
-        if(!delete_user || delete_user.length === 0) {
+        if(delete_user === null) {
             res.json({status: "failed", message: "Couldn't delete"});
         }else{
             res.json({status: "Success", data: delete_user});
         }
     }catch(e){
-        res.status(400).json({status: "Error", error: e.toString()});
+        res.json({status: "Error", error: e.toString()});
     }
 }
 
