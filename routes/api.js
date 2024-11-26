@@ -3,6 +3,7 @@ import express from "express";
 import * as TaskController from "../app/Controller/TaskController.js";
 import * as userController from "../app/Controller/userController.js";
 import { AuthVerify } from "../app/middleware/authMiddleware.js";
+import {updateTaskStatus} from "../app/Controller/TaskController.js";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.post('/passwordReset', userController.Password_Reset);
 
 // Task Related API Endpoint
 router.post('/taskCreate', AuthVerify, TaskController.createTask);
-router.put('/updateTask', AuthVerify, TaskController.updateTask);
+router.put('/updateTaskStatus/:id/:status', AuthVerify, TaskController.updateTaskStatus);
 router.delete('/deleteTask', AuthVerify, TaskController.deleteTask);
 router.get('/taskList', AuthVerify, TaskController.taskListByStatus);
 router.get('/countTask', AuthVerify, TaskController.countTask);

@@ -2,7 +2,7 @@ import UserModel from "../model/UserModel.js";
 import * as tokenUtility from '../utility/tokenUtility.js'; 
 import { UserData } from "../utility/UserDataValidation.js";
 
-// USER REGISTRATIN
+// USER REGISTRATION
 export const Registration = async (req, res) => {
 
     try{
@@ -62,7 +62,7 @@ export const Profile_Update = async (req, res) => {
         const reqBody = req.body;
         const update = await UserModel.updateOne(_id, reqBody);
 
-        if(!update || update.length === 0){
+        if(!update || update.modifiedCount === 0){
             res.json({status: "failed", message: "Couldn't update. Something went wrong!"});
         }else{
             res.json({status: "Success", data: update});
