@@ -8,6 +8,8 @@ import {updateTaskStatus} from "../app/Controller/TaskController.js";
 const router = express.Router();
 
 
+
+
 //USER
 router.post('/registration', userController.Registration);
 router.post('/login', userController.Login);
@@ -20,14 +22,18 @@ router.post('/code-verify', userController.Code_Verify);
 router.post('/passwordReset', userController.Password_Reset);
 
 
+
+
 // Task Related API Endpoint
 router.post('/taskCreate', AuthVerify, TaskController.createTask);
 router.put('/updateTaskStatus/:id/:status', AuthVerify, TaskController.updateTaskStatus);
 router.get('/taskListByStatus/:status', AuthVerify, TaskController.taskListByStatus);
-router.delete('/deleteTask', AuthVerify, TaskController.deleteTask);
+router.delete('/deleteTask/:id', AuthVerify, TaskController.deleteTask);
 router.get('/countTask', AuthVerify, TaskController.countTask);
 
 
 
+// WRONG URL HITING
+router.all('*', userController.wrongUrlHit);
 
 export default router;
