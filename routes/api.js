@@ -29,7 +29,7 @@ router.post('/taskCreate', AuthVerify, TaskController.createTask);
 router.put('/updateTaskStatus/:id/:status', AuthVerify, TaskController.updateTaskStatus);
 router.get('/taskListByStatus/:status', AuthVerify, TaskController.taskListByStatus);
 router.delete('/deleteTask/:id', AuthVerify, TaskController.DeleteTask);
-router.get('/countTask', AuthVerify, TaskController.CountTask);
+router.get('/countTask', AuthVerify, TaskController.CountTaskByStatus);
 
 
 
