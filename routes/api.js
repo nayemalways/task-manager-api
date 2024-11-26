@@ -34,6 +34,6 @@ router.get('/countTask', AuthVerify, TaskController.countTask);
 
 
 // WRONG URL HITING
-router.all('*', userController.wrongUrlHit);
+router.all('*', userController.WrongUrlHit);
 
 export default router;

@@ -106,10 +106,7 @@ export const Password_Reset = async (req, res) => {
     res.json({status: "Success", message: "user password reset successull"});
 }
 
-
-
-
-export const wrongUrlHit = (req, res) => {
+export const WrongUrlHit = (req, res) => {
     res.status(404).json({
         status: "failed",
         message: `The requested URL '${req.originalUrl}' was not found on this server. Please check and try again.`,
