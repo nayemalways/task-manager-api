@@ -28,8 +28,8 @@ router.post('/passwordReset', userController.Password_Reset);
 router.post('/taskCreate', AuthVerify, TaskController.createTask);
 router.put('/updateTaskStatus/:id/:status', AuthVerify, TaskController.updateTaskStatus);
 router.get('/taskListByStatus/:status', AuthVerify, TaskController.taskListByStatus);
-router.delete('/deleteTask/:id', AuthVerify, TaskController.deleteTask);
-router.get('/countTask', AuthVerify, TaskController.countTask);
+router.delete('/deleteTask/:id', AuthVerify, TaskController.DeleteTask);
+router.get('/countTask', AuthVerify, TaskController.CountTask);
 
 
 

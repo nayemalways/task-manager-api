@@ -50,11 +50,24 @@ export const taskListByStatus = async (req, res) => {
 };
 
 //  Delete Task
-export const deleteTask = async (req, res) => {
-    res.json({status: "Success", message: "user deleteTask successful"});
+export const DeleteTask = async (req, res) => {
+    try {
+        const user_id = req.headers["user_id"];
+        const id = req.params["id"];
+        const data = await TaskModel.deleteOne({_id: id, user_id: user_id});
+
+        if(data.deletedCount === 0) {
+            res.json({status: "failed", message: "Couldn't deleted!"});
+        }else{
+            res.json({status: "Success", data: data});
+
+        }
+    }catch(e) {
+        res.json({status: "Error", error: e.toString()});
+    }
 };
 
 // Count Task
-export const countTask = async (req, res) => {
+export const CountTask = async (req, res) => {
     res.json({status:"Success", message: "user countTask successful"});
 }
