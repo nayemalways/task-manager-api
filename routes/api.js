@@ -17,7 +17,7 @@ router.get('/profile-details', AuthVerify, userController.ProfileDetails);
 router.put('/profile-update', AuthVerify, userController.Profile_Update);
 router.delete('/profile-delete', AuthVerify, userController.ProfileDelete);
 
-router.get('/email-verify', userController.Email_Verify);
+router.get('/email-verify/:email', userController.Email_Verify);
 router.post('/code-verify', userController.Code_Verify);
 router.post('/passwordReset', userController.Password_Reset);
 
