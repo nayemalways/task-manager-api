@@ -23,8 +23,8 @@ router.post('/passwordReset', userController.Password_Reset);
 // Task Related API Endpoint
 router.post('/taskCreate', AuthVerify, TaskController.createTask);
 router.put('/updateTaskStatus/:id/:status', AuthVerify, TaskController.updateTaskStatus);
+router.get('/taskListByStatus/:status', AuthVerify, TaskController.taskListByStatus);
 router.delete('/deleteTask', AuthVerify, TaskController.deleteTask);
-router.get('/taskList', AuthVerify, TaskController.taskListByStatus);
 router.get('/countTask', AuthVerify, TaskController.countTask);
 
 
