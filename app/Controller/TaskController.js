@@ -1,18 +1,31 @@
+// Dependencies
 import TaskModel from "../model/TaskModel.js";
 import mongoose from "mongoose";
 const {ObjectId} = mongoose.Types;
 
+
+
+
 // Create Task
 export const createTask = async (req, res) => {
-    const user_id = req.headers["user_id"];
-    const reqBody = req.body;
-    reqBody.user_id = user_id; // Set user id to Data Model
-    const data = await TaskModel.create(reqBody); // Inserted data in the DB
- 
-    if(!data || data.length === 0){
-        res.json({status: "Failed", message: "Couldn't create task!"});
-    }else{
-        res.json({status: "Success", data: data});
+    try {
+        const user_id = req.headers["user_id"];
+        const reqBody = req.body;
+
+        // Set user id to Data Model
+        reqBody.user_id = user_id; 
+
+        // Inserted data in the DB
+        const data = await TaskModel.create(reqBody); 
+    
+        if(!data || data.length === 0){
+            return res.json({status: "Failed", message: "Couldn't create task!"});
+        }else{
+           return res.json({status: "Success", data: data});
+        }
+    }catch(e) {
+        console.log(e);
+        return res.json({status: "error", message: "Internal server error"});
     }
 };
 
@@ -30,7 +43,8 @@ export const updateTaskStatus = async (req, res) => {
         res.json({status: "Success", data: data});
         }
     }catch (e) {
-         res.json({status: "Error", error: e.toString()});
+        console.log(e);
+         res.json({status: "Error", message: "Internal server error"});
     }
 }
 
@@ -47,7 +61,8 @@ export const taskListByStatus = async (req, res) => {
             res.json({status: "Success", data: data})
         }
     }catch(e) {
-        res.json({status: "Error", error: e.toString()});
+        console.log(e);
+        res.json({status: "Error", message: "Internal server error"});
     }
 };
 
@@ -65,11 +80,12 @@ export const DeleteTask = async (req, res) => {
 
         }
     }catch(e) {
-        res.json({status: "Error", error: e.toString()});
+        console.log(e);
+        res.json({status: "Error", message: "Internal server error"});
     }
 };
 
-// Count Task
+// Count Task By Status
 export const CountTaskByStatus = async (req, res) => {
     try {
         const UserObject_Id = new ObjectId(req.headers["user_id"]);
@@ -79,6 +95,7 @@ export const CountTaskByStatus = async (req, res) => {
         ]);
         res.json({status:"Success", data: data});
     }catch(e){
-        res.json({status:"error", error: e.toString()});
+        console.log(e);
+        res.json({status:"error", message: "Internal server error"});
     }
 }

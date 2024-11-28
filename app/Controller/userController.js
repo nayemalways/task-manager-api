@@ -62,13 +62,20 @@ export const Login = async (req, res) => {
 
 // USER PROFILE DETAILS
 export const ProfileDetails = async (req, res) => {
-    const user_id = req.headers['user_id'];
-    const data = await UserModel.findOne({"_id": user_id});
-    
-    if(data === null){
-        res.status(404).json({status: "Fail"});
-    }else{
-        res.json({status: "Success", user: data});
+    try {
+        const user_id = req.headers['user_id'];
+
+        // Find User
+        const data = await UserModel.findOne({"_id": user_id});
+        
+        if(data === null){
+            res.status(404).json({status: "Fail"});
+        }else{
+            res.json({status: "Success", user: data});
+        }
+    }catch(e){
+        console.log(e);
+        return res.status(500).json({status: "fail", message: "Internal server error"});
     }
 }
 
@@ -85,7 +92,8 @@ export const Profile_Update = async (req, res) => {
             res.json({status: "Success", data: update});
         }
     }catch(e){
-        res.json({status: "Error", error: e.toString()});
+        console.log(e);
+        res.json({status: "Error", message: "Internal server error"});
     }
 }
 
@@ -101,7 +109,8 @@ export const ProfileDelete = async (req, res) => {
             res.json({status: "Success", data: delete_user});
         }
     }catch(e){
-        res.json({status: "Error", error: e.toString()});
+        console.log(e);
+        res.json({status: "Error", message: "Internal server error"});
     }
 }
 
@@ -196,7 +205,8 @@ export const Email_Verify = async (req, res) => {
             res.json({status: "Success", message: "Email has beeen sent success!"})
         }
     }catch(e) {
-        res.json({status: "failed", error: e.toString()});
+        console.log(e);
+        res.json({status: "failed", message: "Internal server error"});
     }
 };
 
@@ -221,7 +231,39 @@ export const Code_Verify = async (req, res) => {
 
 // Password Reset
 export const Password_Reset = async (req, res) => {
-    res.json({status: "Success", message: "user password reset successull"});
+    try {
+        const {email, otp, password} = req.body;
+        const user_id = req.headers["user_id"];
+
+        // Find user
+        const isUser = await UserModel.find({email, otp});
+
+        if(isUser === null) {
+            return res.status(401).json({status: "fail", message: "User unauthorized"});
+        }
+
+        // Salt Rounds
+        let saltRounds  = 10;
+
+        // Generate Hash Password
+        const hashPassword = await bcrypt.hash(password, saltRounds);
+
+        // Update Password
+        const updatePassword = await UserModel.updateOne({email}, {
+            otp: "0",
+            password: hashPassword
+        });
+
+        if(updatePassword.modifiedCount === 0){
+            res.json({status: "fail", message: "Couldn't update. Something went wrong!"});
+        }
+
+        res.json({status: "Success", message: "Password update successful"});
+
+    }catch(e) {
+        console.log(e);
+        return res.status(500).json({status:"fail", message: "Internal server error"});
+    }
 }
 
 export const WrongUrlHit = (req, res) => {
