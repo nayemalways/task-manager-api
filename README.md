@@ -16,9 +16,6 @@ Task Manager API is a backend application designed to manage tasks efficiently. 
 
 ---
 
-## Installation
+ 
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd task-manager-backend-project
+
