@@ -6,6 +6,10 @@ dotenv.config();
 // MONGODB CONNECTION
 export const MONGODB_CONNECTION = process.env.MONGODB_CONNECTION;
 
+// DATABASE USERNAME, PASSWORD
+export const USERNAME = process.env.user;
+export const PASSWORD = process.env.pass;
+
 // JSON WEB TOKEN
 export const JWT_SECRET =  process.env.JWT_SECRET;
 export const JWT_EXPIRATION_TIME =  process.env.JWT_EXPIRATION_TIME; // (30 days)

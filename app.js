@@ -5,7 +5,13 @@ import cors from "cors";
 import mongoose from "mongoose";
 import nodemailer from 'nodemailer';
 import rateLimit from "express-rate-limit";
-import {PORT, WEB_CACHE, REQUEST_RATE_LIMIT_NUMBER, REQUEST_RATE_LIMIT_TIME, URL_ENCODE, MONGODB_CONNECTION, MAX_JSON_SIZE} from './app/config/config.js';
+import {PORT, WEB_CACHE,
+     REQUEST_RATE_LIMIT_NUMBER, 
+     REQUEST_RATE_LIMIT_TIME, URL_ENCODE, 
+     MONGODB_CONNECTION, 
+     MAX_JSON_SIZE,
+     USERNAME,
+     PASSWORD} from './app/config/config.js';
 import router from './routes/api.js';
 
 
@@ -27,8 +33,8 @@ app.set('etag', WEB_CACHE);
 
 // MONGODB CONNECTION
 const options = {
-    user: "nayemalways",       
-    pass: "nayem#dev017",   
+    user: USERNAME,       
+    pass: PASSWORD, 
     autoIndex: true,           
     serverSelectionTimeoutMS: 30000   
 };
