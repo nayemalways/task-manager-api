@@ -3,7 +3,7 @@ import { DecodeToken } from "../utility/tokenUtility.js";
 export const AuthVerify = async (req, res, next) => {
     const token = req.headers['token'];
     let decoded = DecodeToken(token);
-
+    
     if(decoded === null){
         res.status(401).json({status: "failed", message: "Unauthorized"});
     }else{

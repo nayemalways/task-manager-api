@@ -2,23 +2,28 @@ import UserModel from "../model/UserModel.js";
 import SendEmail from "../utility/emailUtility.js";
 import * as tokenUtility from '../utility/tokenUtility.js'; 
 import { UserData } from "../utility/UserDataValidation.js";
+import bcrypt from 'bcrypt';
 
 // USER REGISTRATION
 export const Registration = async (req, res) => {
 
     try{
         let reqBody = req.body;
-        const DataValidation = UserData(reqBody); // Validate user data if the right data has inputed
 
-        if(DataValidation){
-            let data = await UserModel.create(reqBody);
-            res.json({status: "Success", data: data});
-        }else{
-            res.json({status: "failed", message: "Not a valid data provided!"});
+        // Cheking User Data Valid or not by utility function
+        const isDataValid = await UserData(reqBody);
+        if(!isDataValid){
+            res.json({status: "fail", message: "Invalid data inputed"});
         }
+
+        // User Registration by Valid User Data
+        let newUser = new UserModel(isDataValid);
+        await newUser.save();
+        res.json({status: "Success", data: newUser});
        
-    }catch(error){
-        return res.json({status: "fail", Message: error.toString()});
+    }catch(e){
+        console.log(e);
+        return res.json({status: "fail", Message: "Inernal server error"});
     }
 
 }
@@ -26,22 +31,33 @@ export const Registration = async (req, res) => {
 // USER LOGIN
 export const Login = async (req, res) => {
     try{
-        const reqBody = req.body;
-        const data = await UserModel.findOne(reqBody);
-
-        if(data === null){
-            return res.status(404).json({status: "fail", message: "User not found"});
-        }else{
-            const token = tokenUtility.TokenEncode(data['email'], data['_id']);
-            res.json({status: "Success", Token: token, message: "User login successfull"});
+        const  {email, password} = req.body;
+  
+        // Input Validation
+        if(!email || !password) {
+            return res.status(400).json({status: "fail", message: "Invalid input"})
         }
+
+        // Find User
+        const user = await UserModel.findOne({email});
+        if(!user) {
+            return res.status(404).json({status: "fail", message: "User not found"})
+        }
+
+        // Password Verification
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if(!isPasswordValid) {
+            return res.status(400).json({status: "fail", message: "Invalid password or email"});
+        }
+
+        // Token Generate
+        const token = tokenUtility.TokenEncode(user["email"], user["_id"]);
+
+        return res.json({status: "Success", token, message: "User login successful"})
     }catch(error){
         console.log(error);
-        return res.json({status: "Error", Message: error.toString()});
+        return res.json({status: "Error", Message: "Inernal server error"});
     }
-        
- 
-   
 }
 
 // USER PROFILE DETAILS
@@ -59,11 +75,11 @@ export const ProfileDetails = async (req, res) => {
 // USER PROFILE UPDATE
 export const Profile_Update = async (req, res) => {
     try {
-        const _id = {_id: req.headers["user_id"]};
+        const id = {_id: req.headers["user_id"]};
         const reqBody = req.body;
-        const update = await UserModel.updateOne(_id, reqBody);
-
-        if(!update || update.modifiedCount === 0){
+        const update = await UserModel.updateOne(id, reqBody);
+ 
+        if(update.modifiedCount === 0){
             res.json({status: "failed", message: "Couldn't update. Something went wrong!"});
         }else{
             res.json({status: "Success", data: update});
@@ -185,9 +201,21 @@ export const Email_Verify = async (req, res) => {
 };
 
 
-// CODE VERIFY
+// OTP CODE VERIFY
 export const Code_Verify = async (req, res) => {
-    res.json({status: "Success", message: "user  code verify successull"});
+    try {
+        const {email, code} = req.params;
+
+        const filteringByCode = await UserModel.find({email, otp: code});
+
+        if(filteringByCode === null) {
+            return res.status(401).json({status: "fail", message: "Did not match code"})
+        }
+        res.json({status: "Success", message: "Verification successful"});
+    } catch(e) {
+        console.log(e);
+        res.json({status: "fail", message: "Internal server error"});
+    }
 };
 
 
